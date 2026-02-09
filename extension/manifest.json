@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Wisely",
+  "version": "1.0.0",
+  "description": "Wisely scans Amazon product pages as you visit them, and shows useful insights to save you time.",
+  "permissions": [
+    "storage", 
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://*.amazon.com/*",
+    "https://*.amazon.in/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.amazon.com/*/dp/*",
+        "https://*.amazon.com/dp/*",
+        "https://*.amazon.com/gp/product/*",
+        "https://*.amazon.in/*/dp/*",
+        "https://*.amazon.in/dp/*"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "logo (1).png",
+      "48": "logo (1).png",
+      "128": "logo (1).png"
+    }
+  },
+  "icons": {
+    "16": "logo (1).png",
+    "48": "logo (1).png",
+    "128": "logo (1).png"
+  }
+}
