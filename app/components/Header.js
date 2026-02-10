@@ -6,7 +6,7 @@ export default function Header() {
     return (
         <div className="max-w-[90%] mx-auto py-6 flex flex-row justify-between">
             <div>
-                <img className="w-30" src="logo.webp"></img>
+                <img className="w-30" src="https://shopwisely.org/_next/image?url=%2Fimages%2Fbrand%2Flogo.png&w=640&q=75"></img>
             </div>
             <div className="self-center flex flex-row gap-10">
                 <NavItem title={"Home"} link={"/"} />

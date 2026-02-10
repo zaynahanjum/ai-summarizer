@@ -1,5 +1,10 @@
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+
 export default function Share() {
   return (
+     <div>
+      <Header/>
     <div className="relative min-h-screen bg-white flex items-center justify-center">
 
     
@@ -111,6 +116,9 @@ export default function Share() {
         </div>
 
       </div>
+     
     </div>
+     <Footer/>
+   </div>
   );
 }

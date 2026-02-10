@@ -1,12 +1,18 @@
+
+import Footer from '../components/Footer';  
+import Header from '../components/Header';
+
 export default function Help() {
     return (
+
         <div className="relative bg-white overflow-hidden">
+              <Header />
             <div className="absolute w-96 h-96 bg-[#30d5c8] rounded-4xl blur-3xl opacity-20 bottom-20 left-20"></div>
               <div className="flex flex-row">
               </div>
            
                <div className="flex flex-col justify-center items-center px-4">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center">We're here to help!</h1>
+                <h1 className="text-3xl mt-10 sm:text-4xl md:text-5xl font-bold text-center">We're here to help!</h1>
            
               </div>
      <div className="flex flex-col px-4 sm:px-8 md:px-16 lg:px-80 xl:px-80 mt-10 sm:mt-16 md:mt-20">
@@ -40,6 +46,6 @@ className="mt-4 rounded-xl sm:rounded-2xl md:rounded-3xl border-2 border-gray-20
 <span className="text-blue-900 font-semibold underline"> contact us </span>with any support requests or feedback!</p>
             </div>
               </div>
-
+  <Footer/>
         </div>
 )}
