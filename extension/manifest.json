@@ -1,14 +1,20 @@
 {
   "manifest_version": 3,
-  "name": "Wisely",
+  "name": "Amazon Product Analyzer",
   "version": "1.0.0",
-  "description": "Wisely scans Amazon product pages as you visit them, and shows useful insights to save you time.",
+  "description": "AI-powered analysis of Amazon product reviews and details using Gemini",
   "permissions": [
-    "storage", 
+    "storage",
     "activeTab"
   ],
   "host_permissions": [
     "https://*.amazon.com/*",
+    "https://*.amazon.co.uk/*",
+    "https://*.amazon.ca/*",
+    "https://*.amazon.de/*",
+    "https://*.amazon.fr/*",
+    "https://*.amazon.it/*",
+    "https://*.amazon.es/*",
     "https://*.amazon.in/*",
     "https://generativelanguage.googleapis.com/*"
   ],
@@ -18,11 +24,14 @@
   "content_scripts": [
     {
       "matches": [
-        "https://*.amazon.com/*/dp/*",
-        "https://*.amazon.com/dp/*",
-        "https://*.amazon.com/gp/product/*",
-        "https://*.amazon.in/*/dp/*",
-        "https://*.amazon.in/dp/*"
+        "https://*.amazon.com/*",
+        "https://*.amazon.co.uk/*",
+        "https://*.amazon.ca/*",
+        "https://*.amazon.de/*",
+        "https://*.amazon.fr/*",
+        "https://*.amazon.it/*",
+        "https://*.amazon.es/*",
+        "https://*.amazon.in/*"
       ],
       "js": ["content.js"],
       "css": ["styles.css"],
@@ -30,16 +39,6 @@
     }
   ],
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "logo (1).png",
-      "48": "logo (1).png",
-      "128": "logo (1).png"
-    }
-  },
-  "icons": {
-    "16": "logo (1).png",
-    "48": "logo (1).png",
-    "128": "logo (1).png"
+    "default_popup": "popup.html"
   }
 }

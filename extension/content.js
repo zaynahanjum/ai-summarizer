@@ -1,3 +1,5 @@
+// content.js - Amazon Product Analyzer Content Script
+
 (function() {
   'use strict';
 
@@ -17,11 +19,9 @@
     const url = window.location.href;
     const dpPattern = /\/dp\/[A-Z0-9]{10}/;
     const gpPattern = /\/gp\/product\/[A-Z0-9]{10}/;
-    
     return dpPattern.test(url) || gpPattern.test(url);
   }
 
-  //can remove
   function extractASIN() {
     const match = window.location.href.match(/\/(?:dp|product)\/([A-Z0-9]{10})/);
     return match ? match[1] : null;
@@ -41,18 +41,11 @@
         return element.textContent.trim();
       }
     }
+
     return 'Unknown Product';
   }
 
-
   function scrapeProductDescription() {
-    // const selectors = [
-    //   '#feature-bullets ul.a-unordered-list',
-    //   '#feature-bullets .a-list-item',
-    //   '.a-section.a-spacing-medium.a-spacing-top-small',
-    //   '[data-feature-name="featurebullets"]'
-    // ];
-
     let description = '';
 
     const bulletContainer = document.querySelector('#feature-bullets ul');
@@ -80,10 +73,9 @@
     return description || 'No description available';
   }
 
-
   function scrapeProductSpecs() {
     const specs = [];
-    
+
     const techDetails = document.querySelectorAll('#productDetails_techSpec_section_1 tr, .prodDetTable tr');
     techDetails.forEach(row => {
       const label = row.querySelector('th');
@@ -134,10 +126,9 @@
     return ingredients;
   }
 
-
   async function scrapeReviews(retryCount = 0) {
     const reviews = [];
-    
+
     const reviewSelectors = [
       '[data-hook="review"]',
       '.review',
@@ -171,7 +162,7 @@
         const textElement = reviewEl.querySelector(selector);
         if (textElement) {
           const text = textElement.textContent.trim();
-          if (text.length > 20) { // Filter out very short reviews
+          if (text.length > 20) {
             reviews.push(text);
             scrapedCount++;
             break;
@@ -233,13 +224,8 @@
     card.className = 'analyzer-card';
     card.innerHTML = `
       <div class="analyzer-header">
-        <div class="analyzer-header-content">
-          <svg class="analyzer-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-          <h3 class="analyzer-title">AI Product Analysis</h3>
-        </div>
-        <button class="analyzer-close" title="Close">×</button>
+        <h3 class="analyzer-title">🤖 AI Product Analysis</h3>
+        <button class="analyzer-close" aria-label="Close">×</button>
       </div>
       <div class="analyzer-content">
         <div class="analyzer-loading">
@@ -260,18 +246,16 @@
 
   function renderAnalysis(analysis) {
     const content = analysisCard.querySelector('.analyzer-content');
-    
     let html = '';
 
     if (analysis.pros && analysis.pros.length > 0) {
       html += `
         <div class="analyzer-section">
-          <h4 class="analyzer-section-title">
-            <span class="section-emoji">👍</span>
-            Pros from Reviews
-          </h4>
+          <h4 class="analyzer-section-title">👍 Pros from Reviews</h4>
           <ul class="analyzer-list pros-list">
-            ${analysis.pros.map(pro => `<li>${escapeHtml(pro)}</li>`).join('')}
+            ${analysis.pros.map(pro => `
+              <li class="analyzer-list-item">${escapeHtml(pro)}</li>
+            `).join('')}
           </ul>
         </div>
       `;
@@ -280,12 +264,11 @@
     if (analysis.cons && analysis.cons.length > 0) {
       html += `
         <div class="analyzer-section">
-          <h4 class="analyzer-section-title">
-            <span class="section-emoji">👎</span>
-            Cons from Reviews
-          </h4>
+          <h4 class="analyzer-section-title">👎 Cons from Reviews</h4>
           <ul class="analyzer-list cons-list">
-            ${analysis.cons.map(con => `<li>${escapeHtml(con)}</li>`).join('')}
+            ${analysis.cons.map(con => `
+              <li class="analyzer-list-item">${escapeHtml(con)}</li>
+            `).join('')}
           </ul>
         </div>
       `;
@@ -294,12 +277,11 @@
     if (analysis.goodToKnow && analysis.goodToKnow.length > 0) {
       html += `
         <div class="analyzer-section">
-          <h4 class="analyzer-section-title">
-            <span class="section-emoji">ℹ️</span>
-            Good To Know
-          </h4>
+          <h4 class="analyzer-section-title">ℹ️ Good To Know</h4>
           <ul class="analyzer-list info-list">
-            ${analysis.goodToKnow.map(info => `<li>${escapeHtml(info)}</li>`).join('')}
+            ${analysis.goodToKnow.map(info => `
+              <li class="analyzer-list-item">${escapeHtml(info)}</li>
+            `).join('')}
           </ul>
         </div>
       `;
@@ -308,13 +290,10 @@
     if (analysis.notableFeatures && analysis.notableFeatures.length > 0) {
       html += `
         <div class="analyzer-section">
-          <h4 class="analyzer-section-title">
-            <span class="section-emoji">⭐</span>
-            Notable Features
-          </h4>
-          <div class="analyzer-pills">
+          <h4 class="analyzer-section-title">⭐ Notable Features</h4>
+          <div class="analyzer-features">
             ${analysis.notableFeatures.map(feature => 
-              `<span class="analyzer-pill">${escapeHtml(feature)}</span>`
+              `<span class="analyzer-feature-tag">${escapeHtml(feature)}</span>`
             ).join('')}
           </div>
         </div>
@@ -325,7 +304,7 @@
       html = `
         <div class="analyzer-error">
           <p>Unable to extract sufficient product information for analysis.</p>
-          <p class="analyzer-error-detail">This may be due to limited reviews or product data.</p>
+          <p>This may be due to limited reviews or product data.</p>
         </div>
       `;
     }
@@ -337,8 +316,8 @@
     const content = analysisCard.querySelector('.analyzer-content');
     content.innerHTML = `
       <div class="analyzer-error">
-        <p>⚠️ Analysis failed</p>
-        <p class="analyzer-error-detail">${escapeHtml(errorMessage)}</p>
+        <h4>⚠️ Analysis Failed</h4>
+        <p>${escapeHtml(errorMessage)}</p>
         <button class="analyzer-retry" onclick="window.location.reload()">Retry</button>
       </div>
     `;
@@ -380,6 +359,7 @@
 
     analysisCard = createAnalysisCard();
     insertionPoint.parentNode.insertBefore(analysisCard, insertionPoint);
+
     console.log('[Amazon Analyzer] Card injected successfully');
   }
 
@@ -409,7 +389,6 @@
       }
 
       const analysis = await analyzeProduct(productData);
-
       renderAnalysis(analysis);
 
     } catch (error) {
@@ -432,23 +411,30 @@
     return div.innerHTML;
   }
 
+  // Initialize
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', runAnalysis);
   } else {
     runAnalysis();
   }
 
+  // Watch for URL changes (SPA navigation)
   let lastUrl = window.location.href;
   new MutationObserver(() => {
     const currentUrl = window.location.href;
     if (currentUrl !== lastUrl) {
       lastUrl = currentUrl;
+      if (analysisCard) {
+        analysisCard.remove();
+      }
       analysisCard = null;
       isAnalyzing = false;
       runAnalysis();
     }
-  }).observe(document.body, { childList: true, subtree: true });
+  }).observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 
   console.log('[Amazon Analyzer] Content script loaded successfully');
-
 })();
